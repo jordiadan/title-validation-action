@@ -10,8 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: npm i
-      - name: Check pull request title
-        uses: ./
+      - uses: ./
         with:
-          repo-name: ${{ env.GITHUB_REPOSITORY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
