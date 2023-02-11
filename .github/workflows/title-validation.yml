@@ -2,7 +2,7 @@ name: Pull Request Title Validation
 
 on:
   pull_request:
-    types: [ opened, edited, synchronize ]
+    types: [opened, edited, synchronize]
 
 jobs:
   title_check:
@@ -10,6 +10,6 @@ jobs:
 
     steps:
       - name: Check pull request title
-      - uses: ./
+        uses: ./
         with:
           repo-name: ${{ env.GITHUB_REPOSITORY }}
