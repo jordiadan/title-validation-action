@@ -1,21 +1,25 @@
-const core = require('@actions/core');
+const { context, GitHub } = require("@actions/github");
 
 async function run() {
-  try {
-    const repoName = core.getInput('repo-name');
+  const github = new GitHub(process.env.GITHUB_TOKEN);
+  const pull_request = context.payload.pull_request;
 
-    console.log(process.env.GITHUB_EVENT_NAME)
+  const title = pull_request.title;
+  const acceptedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
 
-    const pullRequestTitle = process.env.GITHUB_EVENT_NAME.pull_request.title;
-
-    console.log(`Checking pull request title for repository: ${repoName}`);
-
-    if (!pullRequestTitle.match(/^(FEATURE|FIX|TECH|DOCS)/)) {
-      core.setFailed(`The pull request title does not start with FEATURE, FIX, TECH, or DOCS.`);
+  for (const prefix of acceptedPrefixes) {
+    if (title.startsWith(prefix)) {
+      console.log(`The pull request title starts with "${prefix}" which is accepted.`);
+      return;
     }
-  } catch (error) {
-    core.setFailed(error.message);
   }
+
+  console.log(
+      `The pull request title does not start with any of the accepted prefixes: ${acceptedPrefixes.join(
+          ", "
+      )}.`
+  );
+  process.exit(1);
 }
 
 run();

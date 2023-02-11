@@ -1,12 +1,10 @@
-name: Pull Request Title Validation
-
-description: Validate that the title of a pull request starts with FEATURE, FIX, TECH, or DOCS
-
+name: 'Validate Pull Request Title'
+description: 'Validates that the pull request title starts with FEATURE, FIX, TECH, or DOCS'
+author: 'Your Name'
 inputs:
-  repo-name:
-    description: Name of the repository
+  github_token:
+    description: 'The GitHub token for making API calls'
     required: true
-
 runs:
-  using: "node12"
-  main: "index.js"
+  using: 'docker'
+  image: 'Dockerfile'
