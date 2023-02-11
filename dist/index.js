@@ -2688,23 +2688,6 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 258:
-/***/ ((module) => {
-
-let wait = function (milliseconds) {
-  return new Promise((resolve) => {
-    if (typeof milliseconds !== 'number') {
-      throw new Error('milliseconds not a number');
-    }
-    setTimeout(() => resolve("done!"), milliseconds)
-  });
-};
-
-module.exports = wait;
-
-
-/***/ }),
-
 /***/ 357:
 /***/ ((module) => {
 
@@ -2835,20 +2818,17 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(186);
-const wait = __nccwpck_require__(258);
 
-
-// most @actions toolkit packages have async methods
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
+    const repoName = core.getInput('repo-name');
+    const pullRequestTitle = process.env.GITHUB_EVENT_NAME.pull_request.title;
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+    console.log(`Checking pull request title for repository: ${repoName}`);
 
-    core.setOutput('time', new Date().toTimeString());
+    if (!pullRequestTitle.match(/^(FEATURE|FIX|TECH|DOCS)/)) {
+      core.setFailed(`The pull request title does not start with FEATURE, FIX, TECH, or DOCS.`);
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
