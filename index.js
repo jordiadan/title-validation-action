@@ -1,18 +1,15 @@
 const core = require('@actions/core');
-const wait = require('./wait');
 
-
-// most @actions toolkit packages have async methods
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
+    const repoName = core.getInput('repo-name');
+    const pullRequestTitle = process.env.GITHUB_EVENT_NAME.pull_request.title;
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+    console.log(`Checking pull request title for repository: ${repoName}`);
 
-    core.setOutput('time', new Date().toTimeString());
+    if (!pullRequestTitle.match(/^(FEATURE|FIX|TECH|DOCS)/)) {
+      core.setFailed(`The pull request title does not start with FEATURE, FIX, TECH, or DOCS.`);
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
