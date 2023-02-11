@@ -10,7 +10,6 @@ jobs:
 
     steps:
       - name: Check pull request title
-      - uses: actions/checkout@v3
       - uses: ./
         with:
           repo-name: ${{ env.GITHUB_REPOSITORY }}
