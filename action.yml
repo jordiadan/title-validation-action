@@ -1,8 +1,12 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
-outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+name: Pull Request Title Validation
+
+description: Validate that the title of a pull request starts with FEATURE, FIX, TECH, or DOCS
+
+inputs:
+  repo-name:
+    description: Name of the repository
+    required: true
+
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node12"
+  main: "index.js"
