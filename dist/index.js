@@ -1,6 +1,33 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 2932:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const { setFailed } = __nccwpck_require__(2186);
+const { context } = __nccwpck_require__(5438);
+
+async function run() {
+  if (context.eventName !== "pull_request") {
+    setFailed("This Action only runs on pull_request events.");
+    return;
+  }
+
+  const pullRequest = context.payload.pull_request;
+  const title = pullRequest.title;
+
+  const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
+  const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
+
+  if (!allowedRegex.test(title)) {
+    setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
+  }
+}
+
+module.exports = run;
+
+/***/ }),
+
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -9771,38 +9798,13 @@ module.exports = require("zlib");
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-const { GitHub, context } = __nccwpck_require__(5438);
-const core = __nccwpck_require__(2186);
-
-async function run() {
-  const { payload, eventName } = context;
-
-  if (eventName !== "pull_request") {
-    core.setFailed("This Action only runs on pull_request events.");
-  }
-
-  const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
-  const pullRequestTitle = payload.pull_request.title;
-
-  const prefix = pullRequestTitle.split(" ")[0];
-  if (!allowedPrefixes.includes(prefix)) {
-    core.setFailed(
-        `Error: The title must start with one of the following prefixes: ${allowedPrefixes.join(
-            ", "
-        )}`
-    );
-  }
-
-  console.log("The pull request title is valid.");
-}
-
-run();
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(2932);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map

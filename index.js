@@ -1,26 +1,21 @@
-const { GitHub, context } = require("@actions/github");
-const core = require("@actions/core");
+const { setFailed } = require("@actions/core");
+const { context } = require("@actions/github");
 
 async function run() {
-  const { payload, eventName } = context;
-
-  if (eventName !== "pull_request") {
-    core.setFailed("This Action only runs on pull_request events.");
+  if (context.eventName !== "pull_request") {
+    setFailed("This Action only runs on pull_request events.");
+    return;
   }
+
+  const pullRequest = context.payload.pull_request;
+  const title = pullRequest.title;
 
   const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
-  const pullRequestTitle = payload.pull_request.title;
+  const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
 
-  const prefix = pullRequestTitle.split(" ")[0];
-  if (!allowedPrefixes.includes(prefix)) {
-    core.setFailed(
-        `Error: The title must start with one of the following prefixes: ${allowedPrefixes.join(
-            ", "
-        )}`
-    );
+  if (!allowedRegex.test(title)) {
+    setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
   }
-
-  console.log("The pull request title is valid.");
 }
 
-run();
+module.exports = run;
