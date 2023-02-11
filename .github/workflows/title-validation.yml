@@ -10,8 +10,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: npm ci
       - name: Check pull request title
         uses: ./
-        with:
-          repo-name: ${{ env.GITHUB_REPOSITORY }}
