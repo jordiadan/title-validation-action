@@ -1,10 +1,6 @@
 name: "Validate Pull Request Title"
 description: "A GitHub Action that validates the title of a pull request."
 author: "Your Name"
-inputs:
-# No inputs needed for this action
-outputs:
-# No outputs needed for this action
 runs:
   using: "node12"
   main: "index.js"
