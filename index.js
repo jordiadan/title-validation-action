@@ -7,8 +7,10 @@ async function run() {
     return;
   }
 
+  console.log("Starting action...")
   const pullRequest = context.payload.pull_request;
   const title = pullRequest.title;
+  console.log("Title: " + pullRequest.title)
 
   const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
   const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
