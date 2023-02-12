@@ -15,6 +15,8 @@ async function run() {
 
   if (!allowedRegex.test(title)) {
     setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
+  } else {
+    console.log("The pull request title is valid.");
   }
 }
 
