@@ -1,0 +1,15 @@
+name: Pull Request Title Validation
+
+on:
+  pull_request:
+    types: [ opened, edited, synchronize ]
+
+jobs:
+  title_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci
+      - name: Check pull request title
+        uses: ./

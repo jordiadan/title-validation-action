@@ -1,12 +1,6 @@
-name: Pull Request Title Validation
-
-description: Validate that the title of a pull request starts with FEATURE, FIX, TECH, or DOCS
-
-inputs:
-  repo-name:
-    description: Name of the repository
-    required: true
-
+name: "Validate Pull Request Title"
+description: "A GitHub Action that validates the title of a pull request."
+author: "Your Name"
 runs:
   using: "node12"
   main: "index.js"
