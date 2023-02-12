@@ -16,15 +16,14 @@ async function run() {
   const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
   const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
 
-  setFailed("Error, stop with this.");
-  return;
 
   if (!allowedRegex.test(pullRequestTitle)) {
-    console.log("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
     setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
   } else {
     console.log("The pull request title is valid.");
   }
 }
+
+run();
 
 module.exports = run;
