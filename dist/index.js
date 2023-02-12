@@ -13,6 +13,7 @@ async function run() {
 
   if (eventName !== "pull_request") {
     setFailed("This Action only runs on pull_request events.");
+    return;
   }
 
   const pullRequestTitle = payload.pull_request.title;
@@ -23,9 +24,10 @@ async function run() {
 
   if (!allowedRegex.test(pullRequestTitle)) {
     setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
-  } else {
-    console.log("The pull request title is valid.");
+    return;
   }
+
+  console.log("The pull request title is valid.");
 }
 
 run();
