@@ -1,5 +1,5 @@
 const { setFailed } = require("@actions/core");
-const { GitHub, context } = require("@actions/github");
+const { context } = require("@actions/github");
 
 async function run() {
 
@@ -9,9 +9,7 @@ async function run() {
     setFailed("This Action only runs on pull_request events.");
   }
 
-  console.log("Starting action...")
   const pullRequestTitle = payload.pull_request.title;
-  console.log("Title: " + pullRequestTitle.title)
 
   const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
   const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
