@@ -1,5 +1,5 @@
-const { setFailed } = require("@actions/core");
-const { context } = require("@actions/github");
+const {setFailed} = require("@actions/core");
+const {context} = require("@actions/github");
 
 const run = require("./index");
 
@@ -20,29 +20,36 @@ describe("run", () => {
         jest.clearAllMocks();
     });
 
-    it("should setFailed if the eventName is not 'pull_request'", () => {
-        context.eventName = "not_pull_request";
+    it("fails if event is not a pull request", () => {
+        context.eventName = "not_a_pull_request";
         run();
         expect(setFailed).toHaveBeenCalledWith("This Action only runs on pull_request events.");
     });
 
-    it("should setFailed if the pull request title does not start with an allowed prefix", () => {
+    it("fails if pull request title does not start with an allowed prefix", () => {
         context.eventName = "pull_request";
-        context.payload.pull_request.title = "INVALID TITLE";
+        context.payload.pull_request.title = "NOTALLOWED: SCMI-12345 Add new button to home page";
         run();
         expect(setFailed).toHaveBeenCalledWith("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
     });
 
-    it("fails if the pull request title does not contain a JIRA ticket reference after the prefix", () => {
-        context.eventName = "pull_request";
-        context.payload.pull_request.title = "FEATURE: This is an invalid pull request title without a JIRA ticket reference";
-        run();
-        expect(setFailed).toHaveBeenCalledWith("Error: The title must contain a reference to a JIRA ticket after the prefix, in the format SCMI-12345.");
-    });
-
-    it("should not setFailed if the pull request title starts with an allowed prefix", () => {
+    it("fails if pull request title does not contain ship, show or ask emojis", () => {
         context.eventName = "pull_request";
         context.payload.pull_request.title = "FEATURE: SCMI-12345 Add new button to home page";
+        run();
+        expect(setFailed).toHaveBeenCalledWith("Error: The title must contain one of the following emojis after the prefix: 🚢, 🔍, ❓");
+    });
+
+    it("fails if pull request title does not contain a JIRA ticket", () => {
+        context.eventName = "pull_request";
+        context.payload.pull_request.title = "FEATURE: 🚢 No JIRA ticket Add new button to home page";
+        run();
+        expect(setFailed).toHaveBeenCalledWith("Error: The title must contain a reference to a JIRA ticket after the emoji, in the format SCMI-12345.");
+    });
+
+    it("passes if pull request title is valid", () => {
+        context.eventName = "pull_request";
+        context.payload.pull_request.title = "FEATURE: 🚢 SCMI-12345 Add new button to home page";
         run();
         expect(setFailed).not.toHaveBeenCalled();
     });
