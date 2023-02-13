@@ -7,8 +7,35 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 const { setFailed } = __nccwpck_require__(2186);
 const { context } = __nccwpck_require__(5438);
 
-async function run() {
+const ALLOWED_PREFIXES = ["FEATURE", "FIX", "TECH", "DOCS"];
+const ALLOWED_REGEX = new RegExp(`^(${ALLOWED_PREFIXES.join("|")}):`);
+const ALLOWED_EMOJIS = ["🚢", "🔍", "❓"];
+const JIRA_REGEX = /SCMI-[0-9]+/;
 
+async function validatePullRequestTitle(pullRequestTitle) {
+  if (!ALLOWED_REGEX.test(pullRequestTitle)) {
+    setFailed(`Error: The title must start with one of the following prefixes: ${ALLOWED_PREFIXES.join(", ")}`);
+    return false;
+  }
+
+  const titleParts = pullRequestTitle.split(" ");
+  const emoji = titleParts[1];
+  const jiraTicket = titleParts[2];
+
+  if (!ALLOWED_EMOJIS.includes(emoji)) {
+    setFailed(`Error: The title must contain one of the following emojis after the prefix: ${ALLOWED_EMOJIS.join(", ")}`);
+    return false;
+  }
+
+  if (!JIRA_REGEX.test(jiraTicket)) {
+    setFailed("Error: The title must contain a reference to a JIRA ticket after the emoji, in the format SCMI-12345.");
+    return false;
+  }
+
+  return true;
+}
+
+async function run() {
   const { payload, eventName } = context;
 
   if (eventName !== "pull_request") {
@@ -17,32 +44,11 @@ async function run() {
   }
 
   const pullRequestTitle = payload.pull_request.title;
+  const isValid = await validatePullRequestTitle(pullRequestTitle);
 
-  const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
-  const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
-  const allowedEmojis = ["🚢", "🔍", "❓"];
-  const jiraRegex = /SCMI-[0-9]+/;
-
-  if (!allowedRegex.test(pullRequestTitle)) {
-    setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
-    return;
+  if (isValid) {
+    console.log("The pull request title is valid.");
   }
-
-  const titleParts = pullRequestTitle.split(" ");
-  const emoji = titleParts[1];
-  const jiraTicket = titleParts[2];
-
-  if (!allowedEmojis.includes(emoji)) {
-    setFailed("Error: The title must contain one of the following emojis after the prefix: 🚢, 🔍, ❓");
-    return;
-  }
-
-  if (!jiraRegex.test(jiraTicket)) {
-    setFailed("Error: The title must contain a reference to a JIRA ticket after the emoji, in the format SCMI-12345.");
-    return;
-  }
-
-  console.log("The pull request title is valid.");
 }
 
 run();
