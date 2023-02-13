@@ -20,16 +20,25 @@ async function run() {
 
   const allowedPrefixes = ["FEATURE", "FIX", "TECH", "DOCS"];
   const allowedRegex = new RegExp(`^(${allowedPrefixes.join("|")}):`);
-
+  const allowedEmojis = ["🚢", "🔍", "❓"];
+  const jiraRegex = /SCMI-[0-9]+/;
 
   if (!allowedRegex.test(pullRequestTitle)) {
     setFailed("Error: The title must start with one of the following prefixes: FEATURE, FIX, TECH, DOCS");
     return;
   }
 
-  const jiraTicketRegex = /SCMI-[0-9]+/;
-  if (!jiraTicketRegex.test(pullRequestTitle)) {
-    setFailed("Error: The title must contain a reference to a JIRA ticket after the prefix, in the format SCMI-12345.");
+  const titleParts = pullRequestTitle.split(" ");
+  const emoji = titleParts[1];
+  const jiraTicket = titleParts[2];
+
+  if (!allowedEmojis.includes(emoji)) {
+    setFailed("Error: The title must contain one of the following emojis after the prefix: 🚢, 🔍, ❓");
+    return;
+  }
+
+  if (!jiraRegex.test(jiraTicket)) {
+    setFailed("Error: The title must contain a reference to a JIRA ticket after the emoji, in the format SCMI-12345.");
     return;
   }
 
