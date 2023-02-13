@@ -27,6 +27,12 @@ async function run() {
     return;
   }
 
+  const jiraTicketRegex = /SCMI-[0-9]+/;
+  if (!jiraTicketRegex.test(pullRequestTitle)) {
+    setFailed("Error: The title must contain a reference to a JIRA ticket after the prefix, in the format SCMI-12345.");
+    return;
+  }
+
   console.log("The pull request title is valid.");
 }
 
