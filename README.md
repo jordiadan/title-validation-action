@@ -1,5 +1,8 @@
 # GitHub Action for Validating Pull Request Titles
 
+[![Tests Status](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/jordiadan/title-validation-action/actions/workflows/test.yml)
+
+
 This GitHub Action checks if the title of a pull request meets specific criteria. The criteria include:
 
 * The title must start with one of the following prefixes: `FEATURE`, `FIX`, `TECH`, or `DOCS`
